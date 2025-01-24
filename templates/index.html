@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Chatbot</title>
+	<!-- <link rel="icon" href="favicon.ico" type="image/x-icon"> -->
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="static/styles.css">
+</head>
+<body>
+	<div class="container">
+		<h1 class="title">Chat with MarvinAI</h1>
+		<div class="settings">
+			<div class="model">
+				<label for="model" class="model-label">Select AI Model:</label>
+				<select id="model" class="model-selector" aria-label="AI Model Selector">
+					<option value="llama3.1:latest" selected>Llama 3.1 (Latest)</option>
+					<option value="llama3.2:latest" >Llama 3.2 (Latest)</option>
+					<option value="qwen2.5:latest" >Qwen 2.5 (Latest)</option>
+				</select>
+			</div>
+			<button onclick="clearChat()" aria-label="Clear chat">Clear Chat</button>
+		</div>
+		<div id="chat-area" role="log" aria-live="polite">
+			<div class="message bot">
+				<span class="role">Marvin:</span>
+				<span class="message-text">Hello, I'm here to assist you with any questions or tasks you may have. What can I help you with today?</span>
+			</div>
+		</div>
+		<div class="input-container">
+			<textarea id="prompt" rows="2" placeholder="Type your message here..." aria-label="Chat input"></textarea>
+			<button id="sendButton" aria-label="Send message">Ask</button>
+		</div>
+		<p class="disclaimer">Don't forget to pull models in ollama before usage!</p>
+	</div>
+	<script>
+		// CHAT_API = "http://localhost:11434/api/chat";
+		CHAT_API = "/chat";
+		let history = [{
+			"role": "assistant",
+			"content": "Hello, I'm here to assist you with any questions or tasks you may have. What can I help you with today?"
+		}];
+
+		async function sendMessage() {
+			const promptInput = document.getElementById("prompt");
+			const chatArea = document.getElementById("chat-area");
+			const modelSelect = document.getElementById("model");
+			const userMessage = promptInput.value.trim();
+			const UserName = "User";
+			const BotName = "Marvin";
+
+			// Clear the input field
+			promptInput.value = "";
+
+			// Check if the user entered a message
+			if (!userMessage) return;
+
+			// Add user message to chat area
+			chatArea.innerHTML += `
+				<div class="message user">
+					<span class="role">${UserName}:</span>
+					<span class="message-text">${userMessage}</span>
+				</div>`;
+
+			// Add user message to history
+			history.push({
+				"role": "user",
+				"content": userMessage
+			});
+			// Auto-scroll to the bottom
+			chatArea.scrollTo({
+				top: chatArea.scrollHeight,
+				behavior: 'smooth'
+			});
+
+			// Show "Loading..." while waiting for response
+			chatArea.innerHTML += `
+				<div class="message bot">
+					<span class="role">${BotName}:</span>
+					<span class="message-text">
+						Loading... <span class="loading-spinner"></span>
+					</span>
+				</div>`;
+			// Auto-scroll to the bottom
+			chatArea.scrollTo({
+				top: chatArea.scrollHeight,
+				behavior: 'smooth'
+			});
+
+			try {
+				const system_message = "You are Marvin - the android from Hitchhiker's Guide to the Galaxy. Make short and clear answers. Respond concisely and use emojis instead of *sigh* and etc.";
+				if (history[0].role !== "system") {
+					history.unshift({ "role": "system", "content": system_message });
+				}
+
+				const response = await fetch(CHAT_API, {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						model: modelSelect.value,
+						messages: history,
+						stream: false,
+						temperature: 0.7,
+						max_tokens: 511,
+						top_p: 0.95
+					})
+				});
+
+				if (response.ok) {
+					const data = await response.json();
+					const lastBotMessage = chatArea.querySelector(".bot:last-child");
+					lastBotMessage.innerHTML = `
+						<span class="role">${BotName}:</span>
+						<span class="message-text">${data.message.content}</span>`;
+					history.push({ "role": "assistant", "content": data.message.content });
+					// Auto-scroll to the bottom
+					chatArea.scrollTo({
+						top: chatArea.scrollHeight,
+						behavior: 'smooth'
+					});
+				} else {
+					throw new Error("Failed to fetch response");
+				}
+			} catch (error) {
+				console.error(error);
+				const lastBotMessage = chatArea.querySelector(".bot:last-child");
+				lastBotMessage.innerHTML = `
+					<span class="role">${BotName}:</span>
+					<span class="message-text">Error fetching response.</span>`;
+				history.push({ "role": "assistant", "content": "Error fetching response." });
+				// Auto-scroll to the bottom
+				chatArea.scrollTo({
+					top: chatArea.scrollHeight,
+					behavior: 'smooth'
+				});
+			}
+		}
+
+		function clearChat() {
+			const chatArea = document.getElementById("chat-area");
+			history = [{
+				"role": "assistant",
+				"content": "Hello, I'm here to assist you with any questions or tasks you may have. What can I help you with today?"
+			}];
+			chatArea.innerHTML = `
+				<div class="message bot">
+					<span class="role">Marvin:</span>
+					<span class="message-text">${history[0].content}</span>
+				</div>`;
+		}
+
+		document.getElementById("sendButton").addEventListener("click", sendMessage);
+		document.getElementById("prompt").addEventListener("keypress", function (event) {
+			if (event.key === "Enter" && !event.shiftKey) {
+				event.preventDefault();
+				sendMessage();
+			}
+		});
+	</script>
+</body>
+</html>

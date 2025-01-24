@@ -1,0 +1,6 @@
+Fastapi
+uvicorn
+pydantic
+requests
+jinja2
+psycopg2
