@@ -30,6 +30,35 @@ CREATE EXTENSION IF NOT EXISTS vector WITH SCHEMA public;
 COMMENT ON EXTENSION vector IS 'vector data type and ivfflat and hnsw access methods';
 
 
+--
+-- Name: new_session(); Type: FUNCTION; Schema: public; Owner: ollama
+--
+
+CREATE FUNCTION public.new_session() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$BEGIN
+	INSERT INTO messages ("session_id", "content", "role")
+	VALUES(NEW.id, 'First message', 'LLM');
+RETURN NULL;
+END;$$;
+
+
+ALTER FUNCTION public.new_session() OWNER TO ollama;
+
+--
+-- Name: new_user(); Type: FUNCTION; Schema: public; Owner: ollama
+--
+
+CREATE FUNCTION public.new_user() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$BEGIN
+	INSERT INTO sessions ("user_id", "title") VALUES(NEW.id, 'New Session');
+RETURN NULL;
+END;$$;
+
+
+ALTER FUNCTION public.new_user() OWNER TO ollama;
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -176,7 +205,7 @@ CREATE TABLE public.sessions (
     user_id integer NOT NULL,
     title text,
     start_time timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    end_time timestamp without time zone NOT NULL
+    end_time timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -312,96 +341,6 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 
 --
--- Data for Name: history; Type: TABLE DATA; Schema: public; Owner: ollama
---
-
-COPY public.history (id, history, timeadd) FROM stdin;
-1	\nOur conversation started with a discussion about principles related to programming. We explored four main principles: don't panic, be good, jump out of your bubble, and seek excellence. These principles were presented in a humorous and engaging way, likely designed to inspire and motivate developers.	2024-11-20 21:44:15.609447
-\.
-
-
---
--- Data for Name: messages; Type: TABLE DATA; Schema: public; Owner: ollama
---
-
-COPY public.messages (id, session_id, "time", content, role) FROM stdin;
-\.
-
-
---
--- Data for Name: pages; Type: TABLE DATA; Schema: public; Owner: ollama
---
-
-COPY public.pages (id, title, doc, link, rating, embedding, timeadd, timeupdate) FROM stdin;
-\.
-
-
---
--- Data for Name: sessions; Type: TABLE DATA; Schema: public; Owner: ollama
---
-
-COPY public.sessions (id, user_id, title, start_time, end_time) FROM stdin;
-\.
-
-
---
--- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: ollama
---
-
-COPY public.users (id, login, time_first_login, time_last_login) FROM stdin;
-\.
-
-
---
--- Name: history_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ollama
---
-
-SELECT pg_catalog.setval('public.history_id_seq', 1, false);
-
-
---
--- Name: messages_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ollama
---
-
-SELECT pg_catalog.setval('public.messages_id_seq', 1, false);
-
-
---
--- Name: messages_session_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ollama
---
-
-SELECT pg_catalog.setval('public.messages_session_id_seq', 1, false);
-
-
---
--- Name: pages_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ollama
---
-
-SELECT pg_catalog.setval('public.pages_id_seq', 1301, true);
-
-
---
--- Name: sessions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ollama
---
-
-SELECT pg_catalog.setval('public.sessions_id_seq', 1, false);
-
-
---
--- Name: sessions_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ollama
---
-
-SELECT pg_catalog.setval('public.sessions_user_id_seq', 1, false);
-
-
---
--- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ollama
---
-
-SELECT pg_catalog.setval('public.users_id_seq', 1, false);
-
-
---
 -- Name: history history_pkey; Type: CONSTRAINT; Schema: public; Owner: ollama
 --
 
@@ -454,6 +393,20 @@ ALTER TABLE ONLY public.users
 --
 
 CREATE INDEX pages_embedding_idx ON public.pages USING hnsw (embedding public.vector_cosine_ops);
+
+
+--
+-- Name: sessions new_session; Type: TRIGGER; Schema: public; Owner: ollama
+--
+
+CREATE TRIGGER new_session AFTER INSERT ON public.sessions FOR EACH ROW EXECUTE FUNCTION public.new_session();
+
+
+--
+-- Name: users new_user; Type: TRIGGER; Schema: public; Owner: ollama
+--
+
+CREATE TRIGGER new_user AFTER INSERT ON public.users FOR EACH ROW EXECUTE FUNCTION public.new_user();
 
 
 --
