@@ -197,6 +197,85 @@ ALTER SEQUENCE public.pages_id_seq OWNED BY public.pages.id;
 
 
 --
+-- Name: rag_for_messages; Type: TABLE; Schema: public; Owner: ollama
+--
+
+CREATE TABLE public.rag_for_messages (
+    id integer NOT NULL,
+    message_id integer NOT NULL,
+    page_id integer NOT NULL
+);
+
+
+ALTER TABLE public.rag_for_messages OWNER TO ollama;
+
+--
+-- Name: rag_for_messages_id_seq; Type: SEQUENCE; Schema: public; Owner: ollama
+--
+
+CREATE SEQUENCE public.rag_for_messages_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.rag_for_messages_id_seq OWNER TO ollama;
+
+--
+-- Name: rag_for_messages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ollama
+--
+
+ALTER SEQUENCE public.rag_for_messages_id_seq OWNED BY public.rag_for_messages.id;
+
+
+--
+-- Name: rag_for_messages_message_id_seq; Type: SEQUENCE; Schema: public; Owner: ollama
+--
+
+CREATE SEQUENCE public.rag_for_messages_message_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.rag_for_messages_message_id_seq OWNER TO ollama;
+
+--
+-- Name: rag_for_messages_message_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ollama
+--
+
+ALTER SEQUENCE public.rag_for_messages_message_id_seq OWNED BY public.rag_for_messages.message_id;
+
+
+--
+-- Name: rag_for_messages_page_id_seq; Type: SEQUENCE; Schema: public; Owner: ollama
+--
+
+CREATE SEQUENCE public.rag_for_messages_page_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.rag_for_messages_page_id_seq OWNER TO ollama;
+
+--
+-- Name: rag_for_messages_page_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ollama
+--
+
+ALTER SEQUENCE public.rag_for_messages_page_id_seq OWNED BY public.rag_for_messages.page_id;
+
+
+--
 -- Name: sessions; Type: TABLE; Schema: public; Owner: ollama
 --
 
@@ -320,6 +399,27 @@ ALTER TABLE ONLY public.pages ALTER COLUMN id SET DEFAULT nextval('public.pages_
 
 
 --
+-- Name: rag_for_messages id; Type: DEFAULT; Schema: public; Owner: ollama
+--
+
+ALTER TABLE ONLY public.rag_for_messages ALTER COLUMN id SET DEFAULT nextval('public.rag_for_messages_id_seq'::regclass);
+
+
+--
+-- Name: rag_for_messages message_id; Type: DEFAULT; Schema: public; Owner: ollama
+--
+
+ALTER TABLE ONLY public.rag_for_messages ALTER COLUMN message_id SET DEFAULT nextval('public.rag_for_messages_message_id_seq'::regclass);
+
+
+--
+-- Name: rag_for_messages page_id; Type: DEFAULT; Schema: public; Owner: ollama
+--
+
+ALTER TABLE ONLY public.rag_for_messages ALTER COLUMN page_id SET DEFAULT nextval('public.rag_for_messages_page_id_seq'::regclass);
+
+
+--
 -- Name: sessions id; Type: DEFAULT; Schema: public; Owner: ollama
 --
 
@@ -362,6 +462,14 @@ ALTER TABLE ONLY public.messages
 
 ALTER TABLE ONLY public.pages
     ADD CONSTRAINT pages_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: rag_for_messages rag_for_messages_pkey; Type: CONSTRAINT; Schema: public; Owner: ollama
+--
+
+ALTER TABLE ONLY public.rag_for_messages
+    ADD CONSTRAINT rag_for_messages_pkey PRIMARY KEY (id);
 
 
 --
@@ -410,11 +518,27 @@ CREATE TRIGGER new_user AFTER INSERT ON public.users FOR EACH ROW EXECUTE FUNCTI
 
 
 --
+-- Name: rag_for_messages message_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ollama
+--
+
+ALTER TABLE ONLY public.rag_for_messages
+    ADD CONSTRAINT message_id_fkey FOREIGN KEY (message_id) REFERENCES public.messages(id);
+
+
+--
 -- Name: messages messages_session_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ollama
 --
 
 ALTER TABLE ONLY public.messages
     ADD CONSTRAINT messages_session_id_fkey FOREIGN KEY (session_id) REFERENCES public.sessions(id) NOT VALID;
+
+
+--
+-- Name: rag_for_messages page_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ollama
+--
+
+ALTER TABLE ONLY public.rag_for_messages
+    ADD CONSTRAINT page_id_fkey FOREIGN KEY (page_id) REFERENCES public.pages(id);
 
 
 --
