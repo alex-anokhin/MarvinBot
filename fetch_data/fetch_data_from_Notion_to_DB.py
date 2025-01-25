@@ -124,31 +124,33 @@ def fetch_all_data():
                 page_title = get_page_title(notion, page_id)
                 page_content = " ".join(fetch_text_content(notion, page_id))
                 page_url = make_url(page_title, page_id)
-                response = ollama.embeddings(model="mxbai-embed-large",
-                                            prompt=page_content)
-                embedding = response["embedding"]
-                query = ("INSERT INTO pages (title, doc, link, embedding) VALUES (%s, %s, %s, %s)")
-                data = (page_title, page_content, page_url, embedding)
-                dbcursor.execute(query, data)
-                dbconn.commit()
-                rowscount = dbcursor.rowcount
-                print("""Insert page '{}'""".format(page_title))
-##                num = int(0)
-##                while (len(page_text) > 0):
-##                    response = ollama.embeddings(model="mxbai-embed-large",
-##                                                 prompt=page_text[0:str_embedd_size])
-##                    embedding = response["embedding"]
-##                    query = ("INSERT INTO pages (title, doc, link, embedding) VALUES (%s, %s, %s, %s)")
-##                    data = (page_title, page_text[0:str_embedd_size], page_url, embedding)
-##                    dbcursor.execute(query, data)
-##                    dbconn.commit()
-##                    rowscount = dbcursor.rowcount
-##                    print("""Insert part {0} of page '{1}'""".format(num, page_title))
-##                    num += 1
-##                    if (len(page_text) > str_embedd_size):
-##                        page_text = page_text[(str_embedd_size - str_overlap_size):]
-##                    else:
-##                        break
+                if (os.getenv("EMBEDDING_WITH_CHUNKS", "False") == "True"):
+                    num = int(0)
+                    while (len(page_content) > 0):
+                        response = ollama.embeddings(model="mxbai-embed-large",
+                                                     prompt=page_content[0:str_embedd_size])
+                        embedding = response["embedding"]
+                        query = ("INSERT INTO pages (title, doc, link, embedding) VALUES (%s, %s, %s, %s)")
+                        data = (page_title, page_content[0:str_embedd_size], page_url, embedding)
+                        dbcursor.execute(query, data)
+                        dbconn.commit()
+                        rowscount = dbcursor.rowcount
+                        print("""Insert part {0} of page '{1}'""".format(num, page_title))
+                        num += 1
+                        if (len(page_content) > str_embedd_size):
+                            page_content = page_content[(str_embedd_size - str_overlap_size):]
+                        else:
+                            break
+                else:
+                    response = ollama.embeddings(model="mxbai-embed-large",
+                                                prompt=page_content)
+                    embedding = response["embedding"]
+                    query = ("INSERT INTO pages (title, doc, link, embedding) VALUES (%s, %s, %s, %s)")
+                    data = (page_title, page_content, page_url, embedding)
+                    dbcursor.execute(query, data)
+                    dbconn.commit()
+                    #rowscount = dbcursor.rowcount
+                    print("""Insert page '{}'""".format(page_title))
             except Exception as e:
                 print(f"Error processing page {page_id}: {e}")
                 continue
