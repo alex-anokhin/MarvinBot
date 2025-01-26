@@ -65,7 +65,7 @@ def askllm(prompt, dbconn, session_id = 1) -> str:
     resultstr = str()
     for (title, data, link) in pages:
         resultstr += "Title: {}\nData: {}\nLink: {}\n".format(title, data, link)
-    print(resultstr)
+    # print(resultstr)
     ##Get history
     # session_messages = get_session(session_id, dbconn)
     # print("History:\n{}\n".format(session_messages))
