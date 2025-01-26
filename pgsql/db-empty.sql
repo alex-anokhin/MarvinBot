@@ -31,6 +31,22 @@ COMMENT ON EXTENSION vector IS 'vector data type and ivfflat and hnsw access met
 
 
 --
+-- Name: increment_rating_of_page(); Type: FUNCTION; Schema: public; Owner: ollama
+--
+
+CREATE FUNCTION public.increment_rating_of_page() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$BEGIN
+	UPDATE pages
+	SET rating = rating + 1
+	WHERE id = NEW.page_id;
+RETURN NULL;
+END;$$;
+
+
+ALTER FUNCTION public.increment_rating_of_page() OWNER TO ollama;
+
+--
 -- Name: new_session(); Type: FUNCTION; Schema: public; Owner: ollama
 --
 
@@ -38,7 +54,7 @@ CREATE FUNCTION public.new_session() RETURNS trigger
     LANGUAGE plpgsql
     AS $$BEGIN
 	INSERT INTO messages ("session_id", "content", "role")
-	VALUES(NEW.id, 'First message', 'LLM');
+	VALUES(NEW.id, 'Hello, I''m here to assist you with any questions or tasks you may have. What can I help you with today?', 'assistant');
 RETURN NULL;
 END;$$;
 
@@ -58,6 +74,22 @@ END;$$;
 
 
 ALTER FUNCTION public.new_user() OWNER TO ollama;
+
+--
+-- Name: update_session_end_time(); Type: FUNCTION; Schema: public; Owner: ollama
+--
+
+CREATE FUNCTION public.update_session_end_time() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$BEGIN
+	UPDATE sessions
+	SET end_time = NEW.time
+	WHERE id = NEW.session_id;
+RETURN NULL;
+END;$$;
+
+
+ALTER FUNCTION public.update_session_end_time() OWNER TO ollama;
 
 SET default_tablespace = '';
 
@@ -501,6 +533,20 @@ ALTER TABLE ONLY public.users
 --
 
 CREATE INDEX pages_embedding_idx ON public.pages USING hnsw (embedding public.vector_cosine_ops);
+
+
+--
+-- Name: rag_for_messages increment_rating; Type: TRIGGER; Schema: public; Owner: ollama
+--
+
+CREATE TRIGGER increment_rating AFTER INSERT ON public.rag_for_messages FOR EACH ROW EXECUTE FUNCTION public.increment_rating_of_page();
+
+
+--
+-- Name: messages new_message; Type: TRIGGER; Schema: public; Owner: ollama
+--
+
+CREATE TRIGGER new_message AFTER INSERT ON public.messages FOR EACH ROW EXECUTE FUNCTION public.update_session_end_time();
 
 
 --

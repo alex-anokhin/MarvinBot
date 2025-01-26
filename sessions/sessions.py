@@ -11,7 +11,8 @@ def get_sessions_list(user_name, dbconn):
     sessions_list=list()
     while (rowcnt == 0):
         query = ("""SELECT sessions.id, sessions.title, sessions.end_time FROM sessions, users
-                WHERE sessions.user_id = users.id AND users.login = %s""")
+                WHERE sessions.user_id = users.id AND users.login = %s
+                ORDER BY sessions.end_time ASC""")
         dbcursor.execute(query, (user_name, ))
         rowcnt = dbcursor.rowcount
         if (dbcursor.rowcount == 0):

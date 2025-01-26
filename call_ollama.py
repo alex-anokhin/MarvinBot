@@ -11,7 +11,26 @@ from sessions import get_sessions_list, get_session
 from messages import add_message
 from users import add_user
 
-def askllm(prompt, dbconn, session_id = 1) -> str:
+def get_pages_for_history(session_id, dbconn):
+    dbcursor = dbconn.cursor()
+    query = """SELECT DISTINCT ON (page_id) page_id FROM rag_for_messages, messages, sessions
+            WHERE rag_for_messages.message_id=messages.id
+                AND messages.session_id = sessions.id
+                AND sessions.id = %s"""
+    dbcursor.execute(query, (session_id,))
+    results = list()
+    dbcursor1 = dbconn.cursor()
+    for (page_id) in dbcursor:
+        query = ("""SELECT title, doc, link FROM pages WHERE id = %s""")
+        dbcursor1.execute(query, (page_id,))
+        for (title, doc, link) in dbcursor1:
+            results.append([str(title), str(doc), str(link)])
+    dbconn.commit()
+    dbcursor1.close()    
+    dbcursor.fetchall()
+    return(results)
+
+def get_pages_for_answer(prompt, session_id, dbconn):
     dbcursor = dbconn.cursor()
     message_id = add_message(session_id, "user", prompt, dbconn)
     response = ollama.embeddings(
@@ -31,14 +50,22 @@ def askllm(prompt, dbconn, session_id = 1) -> str:
         query = ("""INSERT INTO rag_for_messages (message_id, page_id)
             VALUES(%s, %s)""")
         dbcursor1.execute(query, (message_id, page_id))
-    dbcursor1.close()
-    dbconn.commit()
     dbcursor.fetchall()
-    resultstr = str()
-    for (title, data, link) in results:
-        resultstr += "Title: {}\nData: {}\nLink: {}\n".format(title, data, link)
-#    print(resultstr)
+    dbconn.commit()
+    dbcursor1.close()
     dbcursor.close()
+    return(results)
+
+def askllm(prompt, dbconn, session_id = 1) -> str:
+    pages = get_pages_for_answer(prompt, session_id, dbconn)
+    # Add pages for messages in history
+    for history_page in get_pages_for_history(session_id, dbconn):
+        if history_page not in pages:
+            pages.append(history_page)
+    resultstr = str()
+    for (title, data, link) in pages:
+        resultstr += "Title: {}\nData: {}\nLink: {}\n".format(title, data, link)
+    print(resultstr)
     ##Get history
     # session_messages = get_session(session_id, dbconn)
     # print("History:\n{}\n".format(session_messages))
