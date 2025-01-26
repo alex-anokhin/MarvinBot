@@ -2,50 +2,47 @@ import os
 from dotenv import load_dotenv
 import psycopg2
 import ollama
-
+import sys
 load_dotenv()
-# Connect to your postgres DB
-dbconn = psycopg2.connect(host=os.getenv("DB_HOST"),
-                        dbname=os.getenv("DB_NAME"),
-                        user=os.getenv("DB_USER"),
-                        password=os.getenv("DB_PASSWORD")
-)
+sys.path.append("sessions")
+sys.path.append("messages")
+sys.path.append("users")
+from sessions import get_sessions_list, get_session
+from messages import add_message
+from users import add_user
 
-
-# Open a cursor to perform database operations
-dbcursor = dbconn.cursor()
-
-def askllm(prompt, session_id = 1) -> str:
+def askllm(prompt, dbconn, session_id = 1) -> str:
+    dbcursor = dbconn.cursor()
+    message_id = add_message(session_id, "user", prompt, dbconn)
     response = ollama.embeddings(
         prompt=prompt,
         model="mxbai-embed-large"
         )
     ##Get vectors
-    query = "SELECT title, doc, link FROM pages ORDER BY embedding <=> %s LIMIT 3"
+    query = "SELECT id, title, doc, link FROM pages ORDER BY embedding <=> %s LIMIT 3"
     ##print(str(response["embedding"]))
     data = ((str(response["embedding"])), )
     dbcursor.execute(query, data)
     results = list()
-    for (title, doc, link) in dbcursor:
+    dbcursor1 = dbconn.cursor()
+    for (page_id, title, doc, link) in dbcursor:
         #print(""Result of SQL Select:" Title: {0}; Doc: {1}; Link: {2}".format(str(title), str(doc), str(link)))
         results.append([str(title), str(doc), str(link)])
+        query = ("""INSERT INTO rag_for_messages (message_id, page_id)
+            VALUES(%s, %s)""")
+        dbcursor1.execute(query, (message_id, page_id))
+    dbcursor1.close()
+    dbconn.commit()
     dbcursor.fetchall()
     resultstr = str()
     for (title, data, link) in results:
-        resultstr += "Title: {0}\nData: {1}\nLink: {2}\n".format(title, data, link)
+        resultstr += "Title: {}\nData: {}\nLink: {}\n".format(title, data, link)
 #    print(resultstr)
-
+    dbcursor.close()
     ##Get history
-#    history = str()
-#    query = "SELECT history FROM history WHERE id=%s"
-#    data = (session_id, )
-#    dbcursor.execute(query, data)
-#    for (historys,) in dbcursor:
-#        history = historys
-#    dbcursor.fetchall()
-#    print("Previous history:\n{0}\n".format(history))
-    ##Send question
-#    answer = list()
+    # session_messages = get_session(session_id, dbconn)
+    # print("History:\n{}\n".format(session_messages))
+    ##Send question    
     output = ollama.generate(
         model="llama3.2",
         prompt=f"""You are Marvin bot from The Hitchhiker's Guide to the Galaxy.
@@ -69,22 +66,31 @@ def askllm(prompt, session_id = 1) -> str:
 #    dbcursor.execute(query, data)
 #    dbconn.commit()
 #    return(answer)
+    message_id = add_message(session_id, "assistant", output['response'], dbconn)
     return(output['response'])
 ##    return (output['response'])
 
-    
+# Connect to your postgres DB
+dbconn = psycopg2.connect(host=os.getenv("DB_HOST"),
+                        dbname=os.getenv("DB_NAME"),
+                        user=os.getenv("DB_USER"),
+                        password=os.getenv("DB_PASSWORD")
+)
+
+curr_session_id = 0
+sessions_list = get_sessions_list("test_user@42heilbronn.de", dbconn)
+for session in sessions_list:
+    curr_session_id = session[0]
+    print("Session id {} title: {}, end_time: {}".format(session[0], session[1], session[2]))
+    messages_list = get_session(session[0], dbconn)
+    for message in messages_list:
+        print("{} role {}: {}".format(message[0], message[1], message[2]))
+
 print("Write your question:")
-import sys
-#prompt = "How can I prepare me to Exam? Say me short."
-##history = str()
 for prompt in sys.stdin:
     if (prompt.rstrip() == "exit"):
         break
-    print("Answer from llama:\n{0}\n\n".format(askllm(prompt)))
+    print("Answer from llama:\n{0}\n\n".format(askllm(prompt, dbconn, curr_session_id)))
     print("Write your question:")
 
 print("Done")
-dbcursor.close()
-
-
-

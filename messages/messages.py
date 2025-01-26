@@ -1,21 +1,20 @@
-import os
-from dotenv import load_dotenv
 import psycopg2
 
-# Load environment variables (need to create .env file with DB credentials)
-load_dotenv()
+# role =
+#   user
+#   system
+#   assistant
 
-# Connect to your postgres DB
-dbconn = psycopg2.connect(host=os.getenv("DB_HOST"),
-                        dbname=os.getenv("DB_NAME"),
-                        user=os.getenv("DB_USER"),
-                        password=os.getenv("DB_PASSWORD")
-)
-
-def add_message(session_id, role, content):
+def add_message(session_id, role, content, dbconn):
     dbcursor = dbconn.cursor()    
     query = ("""INSERT INTO messages (session_id, role, content)
-            VALUES(%s, %s, %s)""")
+            VALUES(%s, %s, %s)
+            RETURNING id""")
     dbcursor.execute(query, (session_id, role, content))
+    message_id = 0
+    for (mess_id) in dbcursor:
+        message_id = mess_id
     dbconn.commit()
     dbcursor.close()
+    return (message_id)
+
