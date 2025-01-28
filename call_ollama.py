@@ -57,8 +57,9 @@ def get_pages_for_answer(prompt, session_id, dbconn):
     return(results)
 
 def askllm(prompt, dbconn, session_id = 1) -> str:
+    # RAG
     pages = get_pages_for_answer(prompt, session_id, dbconn)
-    # Add pages for messages in history
+    # Add RAG pages for messages from history
     for history_page in get_pages_for_history(session_id, dbconn):
         if history_page not in pages:
             pages.append(history_page)
