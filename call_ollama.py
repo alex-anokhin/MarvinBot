@@ -75,7 +75,8 @@ def get_answer_from_ollama(prompt, dbconn, session_id = 1) -> str:
     session_messages.extend(get_messages(session_id, dbconn))
     response = chat(
         'llama3.2',
-        messages = session_messages
+        messages = session_messages,
+        options={'temperature': 0.75}
         )
 
 ##    message_id = add_message(session_id, "assistant", output['response'], dbconn)
