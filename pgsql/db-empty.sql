@@ -31,7 +31,7 @@ COMMENT ON EXTENSION vector IS 'vector data type and ivfflat and hnsw access met
 
 
 --
--- Name: increment_rating_of_page(); Type: FUNCTION; Schema: public; Owner: ollama
+-- Name: increment_rating_of_page(); Type: FUNCTION; Schema: public; Owner: marvin
 --
 
 CREATE FUNCTION public.increment_rating_of_page() RETURNS trigger
@@ -44,10 +44,10 @@ RETURN NULL;
 END;$$;
 
 
-ALTER FUNCTION public.increment_rating_of_page() OWNER TO ollama;
+ALTER FUNCTION public.increment_rating_of_page() OWNER TO marvin;
 
 --
--- Name: new_session(); Type: FUNCTION; Schema: public; Owner: ollama
+-- Name: new_session(); Type: FUNCTION; Schema: public; Owner: marvin
 --
 
 CREATE FUNCTION public.new_session() RETURNS trigger
@@ -59,10 +59,10 @@ RETURN NULL;
 END;$$;
 
 
-ALTER FUNCTION public.new_session() OWNER TO ollama;
+ALTER FUNCTION public.new_session() OWNER TO marvin;
 
 --
--- Name: new_user(); Type: FUNCTION; Schema: public; Owner: ollama
+-- Name: new_user(); Type: FUNCTION; Schema: public; Owner: marvin
 --
 
 CREATE FUNCTION public.new_user() RETURNS trigger
@@ -73,10 +73,10 @@ RETURN NULL;
 END;$$;
 
 
-ALTER FUNCTION public.new_user() OWNER TO ollama;
+ALTER FUNCTION public.new_user() OWNER TO marvin;
 
 --
--- Name: update_session_end_time(); Type: FUNCTION; Schema: public; Owner: ollama
+-- Name: update_session_end_time(); Type: FUNCTION; Schema: public; Owner: marvin
 --
 
 CREATE FUNCTION public.update_session_end_time() RETURNS trigger
@@ -89,14 +89,14 @@ RETURN NULL;
 END;$$;
 
 
-ALTER FUNCTION public.update_session_end_time() OWNER TO ollama;
+ALTER FUNCTION public.update_session_end_time() OWNER TO marvin;
 
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
 --
--- Name: history; Type: TABLE; Schema: public; Owner: ollama
+-- Name: history; Type: TABLE; Schema: public; Owner: marvin
 --
 
 CREATE TABLE public.history (
@@ -106,10 +106,10 @@ CREATE TABLE public.history (
 );
 
 
-ALTER TABLE public.history OWNER TO ollama;
+ALTER TABLE public.history OWNER TO marvin;
 
 --
--- Name: history_id_seq; Type: SEQUENCE; Schema: public; Owner: ollama
+-- Name: history_id_seq; Type: SEQUENCE; Schema: public; Owner: marvin
 --
 
 CREATE SEQUENCE public.history_id_seq
@@ -121,17 +121,17 @@ CREATE SEQUENCE public.history_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.history_id_seq OWNER TO ollama;
+ALTER TABLE public.history_id_seq OWNER TO marvin;
 
 --
--- Name: history_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ollama
+-- Name: history_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: marvin
 --
 
 ALTER SEQUENCE public.history_id_seq OWNED BY public.history.id;
 
 
 --
--- Name: messages; Type: TABLE; Schema: public; Owner: ollama
+-- Name: messages; Type: TABLE; Schema: public; Owner: marvin
 --
 
 CREATE TABLE public.messages (
@@ -143,10 +143,10 @@ CREATE TABLE public.messages (
 );
 
 
-ALTER TABLE public.messages OWNER TO ollama;
+ALTER TABLE public.messages OWNER TO marvin;
 
 --
--- Name: messages_id_seq; Type: SEQUENCE; Schema: public; Owner: ollama
+-- Name: messages_id_seq; Type: SEQUENCE; Schema: public; Owner: marvin
 --
 
 CREATE SEQUENCE public.messages_id_seq
@@ -157,17 +157,17 @@ CREATE SEQUENCE public.messages_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.messages_id_seq OWNER TO ollama;
+ALTER TABLE public.messages_id_seq OWNER TO marvin;
 
 --
--- Name: messages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ollama
+-- Name: messages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: marvin
 --
 
 ALTER SEQUENCE public.messages_id_seq OWNED BY public.messages.id;
 
 
 --
--- Name: messages_session_id_seq; Type: SEQUENCE; Schema: public; Owner: ollama
+-- Name: messages_session_id_seq; Type: SEQUENCE; Schema: public; Owner: marvin
 --
 
 CREATE SEQUENCE public.messages_session_id_seq
@@ -179,17 +179,17 @@ CREATE SEQUENCE public.messages_session_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.messages_session_id_seq OWNER TO ollama;
+ALTER TABLE public.messages_session_id_seq OWNER TO marvin;
 
 --
--- Name: messages_session_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ollama
+-- Name: messages_session_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: marvin
 --
 
 ALTER SEQUENCE public.messages_session_id_seq OWNED BY public.messages.session_id;
 
 
 --
--- Name: pages; Type: TABLE; Schema: public; Owner: ollama
+-- Name: pages; Type: TABLE; Schema: public; Owner: marvin
 --
 
 CREATE TABLE public.pages (
@@ -204,10 +204,10 @@ CREATE TABLE public.pages (
 );
 
 
-ALTER TABLE public.pages OWNER TO ollama;
+ALTER TABLE public.pages OWNER TO marvin;
 
 --
--- Name: pages_id_seq; Type: SEQUENCE; Schema: public; Owner: ollama
+-- Name: pages_id_seq; Type: SEQUENCE; Schema: public; Owner: marvin
 --
 
 CREATE SEQUENCE public.pages_id_seq
@@ -219,17 +219,17 @@ CREATE SEQUENCE public.pages_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.pages_id_seq OWNER TO ollama;
+ALTER TABLE public.pages_id_seq OWNER TO marvin;
 
 --
--- Name: pages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ollama
+-- Name: pages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: marvin
 --
 
 ALTER SEQUENCE public.pages_id_seq OWNED BY public.pages.id;
 
 
 --
--- Name: rag_for_messages; Type: TABLE; Schema: public; Owner: ollama
+-- Name: rag_for_messages; Type: TABLE; Schema: public; Owner: marvin
 --
 
 CREATE TABLE public.rag_for_messages (
@@ -239,10 +239,10 @@ CREATE TABLE public.rag_for_messages (
 );
 
 
-ALTER TABLE public.rag_for_messages OWNER TO ollama;
+ALTER TABLE public.rag_for_messages OWNER TO marvin;
 
 --
--- Name: rag_for_messages_id_seq; Type: SEQUENCE; Schema: public; Owner: ollama
+-- Name: rag_for_messages_id_seq; Type: SEQUENCE; Schema: public; Owner: marvin
 --
 
 CREATE SEQUENCE public.rag_for_messages_id_seq
@@ -254,17 +254,17 @@ CREATE SEQUENCE public.rag_for_messages_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.rag_for_messages_id_seq OWNER TO ollama;
+ALTER TABLE public.rag_for_messages_id_seq OWNER TO marvin;
 
 --
--- Name: rag_for_messages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ollama
+-- Name: rag_for_messages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: marvin
 --
 
 ALTER SEQUENCE public.rag_for_messages_id_seq OWNED BY public.rag_for_messages.id;
 
 
 --
--- Name: rag_for_messages_message_id_seq; Type: SEQUENCE; Schema: public; Owner: ollama
+-- Name: rag_for_messages_message_id_seq; Type: SEQUENCE; Schema: public; Owner: marvin
 --
 
 CREATE SEQUENCE public.rag_for_messages_message_id_seq
@@ -276,17 +276,17 @@ CREATE SEQUENCE public.rag_for_messages_message_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.rag_for_messages_message_id_seq OWNER TO ollama;
+ALTER TABLE public.rag_for_messages_message_id_seq OWNER TO marvin;
 
 --
--- Name: rag_for_messages_message_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ollama
+-- Name: rag_for_messages_message_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: marvin
 --
 
 ALTER SEQUENCE public.rag_for_messages_message_id_seq OWNED BY public.rag_for_messages.message_id;
 
 
 --
--- Name: rag_for_messages_page_id_seq; Type: SEQUENCE; Schema: public; Owner: ollama
+-- Name: rag_for_messages_page_id_seq; Type: SEQUENCE; Schema: public; Owner: marvin
 --
 
 CREATE SEQUENCE public.rag_for_messages_page_id_seq
@@ -298,17 +298,17 @@ CREATE SEQUENCE public.rag_for_messages_page_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.rag_for_messages_page_id_seq OWNER TO ollama;
+ALTER TABLE public.rag_for_messages_page_id_seq OWNER TO marvin;
 
 --
--- Name: rag_for_messages_page_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ollama
+-- Name: rag_for_messages_page_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: marvin
 --
 
 ALTER SEQUENCE public.rag_for_messages_page_id_seq OWNED BY public.rag_for_messages.page_id;
 
 
 --
--- Name: sessions; Type: TABLE; Schema: public; Owner: ollama
+-- Name: sessions; Type: TABLE; Schema: public; Owner: marvin
 --
 
 CREATE TABLE public.sessions (
@@ -320,10 +320,10 @@ CREATE TABLE public.sessions (
 );
 
 
-ALTER TABLE public.sessions OWNER TO ollama;
+ALTER TABLE public.sessions OWNER TO marvin;
 
 --
--- Name: sessions_id_seq; Type: SEQUENCE; Schema: public; Owner: ollama
+-- Name: sessions_id_seq; Type: SEQUENCE; Schema: public; Owner: marvin
 --
 
 CREATE SEQUENCE public.sessions_id_seq
@@ -335,17 +335,17 @@ CREATE SEQUENCE public.sessions_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.sessions_id_seq OWNER TO ollama;
+ALTER TABLE public.sessions_id_seq OWNER TO marvin;
 
 --
--- Name: sessions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ollama
+-- Name: sessions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: marvin
 --
 
 ALTER SEQUENCE public.sessions_id_seq OWNED BY public.sessions.id;
 
 
 --
--- Name: sessions_user_id_seq; Type: SEQUENCE; Schema: public; Owner: ollama
+-- Name: sessions_user_id_seq; Type: SEQUENCE; Schema: public; Owner: marvin
 --
 
 CREATE SEQUENCE public.sessions_user_id_seq
@@ -357,17 +357,17 @@ CREATE SEQUENCE public.sessions_user_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.sessions_user_id_seq OWNER TO ollama;
+ALTER TABLE public.sessions_user_id_seq OWNER TO marvin;
 
 --
--- Name: sessions_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ollama
+-- Name: sessions_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: marvin
 --
 
 ALTER SEQUENCE public.sessions_user_id_seq OWNED BY public.sessions.user_id;
 
 
 --
--- Name: users; Type: TABLE; Schema: public; Owner: ollama
+-- Name: users; Type: TABLE; Schema: public; Owner: marvin
 --
 
 CREATE TABLE public.users (
@@ -378,10 +378,10 @@ CREATE TABLE public.users (
 );
 
 
-ALTER TABLE public.users OWNER TO ollama;
+ALTER TABLE public.users OWNER TO marvin;
 
 --
--- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: ollama
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: marvin
 --
 
 CREATE SEQUENCE public.users_id_seq
@@ -393,87 +393,87 @@ CREATE SEQUENCE public.users_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.users_id_seq OWNER TO ollama;
+ALTER TABLE public.users_id_seq OWNER TO marvin;
 
 --
--- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ollama
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: marvin
 --
 
 ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
--- Name: history id; Type: DEFAULT; Schema: public; Owner: ollama
+-- Name: history id; Type: DEFAULT; Schema: public; Owner: marvin
 --
 
 ALTER TABLE ONLY public.history ALTER COLUMN id SET DEFAULT nextval('public.history_id_seq'::regclass);
 
 
 --
--- Name: messages id; Type: DEFAULT; Schema: public; Owner: ollama
+-- Name: messages id; Type: DEFAULT; Schema: public; Owner: marvin
 --
 
 ALTER TABLE ONLY public.messages ALTER COLUMN id SET DEFAULT nextval('public.messages_id_seq'::regclass);
 
 
 --
--- Name: messages session_id; Type: DEFAULT; Schema: public; Owner: ollama
+-- Name: messages session_id; Type: DEFAULT; Schema: public; Owner: marvin
 --
 
 ALTER TABLE ONLY public.messages ALTER COLUMN session_id SET DEFAULT nextval('public.messages_session_id_seq'::regclass);
 
 
 --
--- Name: pages id; Type: DEFAULT; Schema: public; Owner: ollama
+-- Name: pages id; Type: DEFAULT; Schema: public; Owner: marvin
 --
 
 ALTER TABLE ONLY public.pages ALTER COLUMN id SET DEFAULT nextval('public.pages_id_seq'::regclass);
 
 
 --
--- Name: rag_for_messages id; Type: DEFAULT; Schema: public; Owner: ollama
+-- Name: rag_for_messages id; Type: DEFAULT; Schema: public; Owner: marvin
 --
 
 ALTER TABLE ONLY public.rag_for_messages ALTER COLUMN id SET DEFAULT nextval('public.rag_for_messages_id_seq'::regclass);
 
 
 --
--- Name: rag_for_messages message_id; Type: DEFAULT; Schema: public; Owner: ollama
+-- Name: rag_for_messages message_id; Type: DEFAULT; Schema: public; Owner: marvin
 --
 
 ALTER TABLE ONLY public.rag_for_messages ALTER COLUMN message_id SET DEFAULT nextval('public.rag_for_messages_message_id_seq'::regclass);
 
 
 --
--- Name: rag_for_messages page_id; Type: DEFAULT; Schema: public; Owner: ollama
+-- Name: rag_for_messages page_id; Type: DEFAULT; Schema: public; Owner: marvin
 --
 
 ALTER TABLE ONLY public.rag_for_messages ALTER COLUMN page_id SET DEFAULT nextval('public.rag_for_messages_page_id_seq'::regclass);
 
 
 --
--- Name: sessions id; Type: DEFAULT; Schema: public; Owner: ollama
+-- Name: sessions id; Type: DEFAULT; Schema: public; Owner: marvin
 --
 
 ALTER TABLE ONLY public.sessions ALTER COLUMN id SET DEFAULT nextval('public.sessions_id_seq'::regclass);
 
 
 --
--- Name: sessions user_id; Type: DEFAULT; Schema: public; Owner: ollama
+-- Name: sessions user_id; Type: DEFAULT; Schema: public; Owner: marvin
 --
 
 ALTER TABLE ONLY public.sessions ALTER COLUMN user_id SET DEFAULT nextval('public.sessions_user_id_seq'::regclass);
 
 
 --
--- Name: users id; Type: DEFAULT; Schema: public; Owner: ollama
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: marvin
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
 
 
 --
--- Name: history history_pkey; Type: CONSTRAINT; Schema: public; Owner: ollama
+-- Name: history history_pkey; Type: CONSTRAINT; Schema: public; Owner: marvin
 --
 
 ALTER TABLE ONLY public.history
@@ -481,7 +481,7 @@ ALTER TABLE ONLY public.history
 
 
 --
--- Name: messages messages_pkey; Type: CONSTRAINT; Schema: public; Owner: ollama
+-- Name: messages messages_pkey; Type: CONSTRAINT; Schema: public; Owner: marvin
 --
 
 ALTER TABLE ONLY public.messages
@@ -489,7 +489,7 @@ ALTER TABLE ONLY public.messages
 
 
 --
--- Name: pages pages_pkey; Type: CONSTRAINT; Schema: public; Owner: ollama
+-- Name: pages pages_pkey; Type: CONSTRAINT; Schema: public; Owner: marvin
 --
 
 ALTER TABLE ONLY public.pages
@@ -497,7 +497,7 @@ ALTER TABLE ONLY public.pages
 
 
 --
--- Name: rag_for_messages rag_for_messages_pkey; Type: CONSTRAINT; Schema: public; Owner: ollama
+-- Name: rag_for_messages rag_for_messages_pkey; Type: CONSTRAINT; Schema: public; Owner: marvin
 --
 
 ALTER TABLE ONLY public.rag_for_messages
@@ -505,7 +505,7 @@ ALTER TABLE ONLY public.rag_for_messages
 
 
 --
--- Name: sessions sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: ollama
+-- Name: sessions sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: marvin
 --
 
 ALTER TABLE ONLY public.sessions
@@ -513,7 +513,7 @@ ALTER TABLE ONLY public.sessions
 
 
 --
--- Name: users users_login; Type: CONSTRAINT; Schema: public; Owner: ollama
+-- Name: users users_login; Type: CONSTRAINT; Schema: public; Owner: marvin
 --
 
 ALTER TABLE ONLY public.users
@@ -521,7 +521,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: ollama
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: marvin
 --
 
 ALTER TABLE ONLY public.users
@@ -529,42 +529,42 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: pages_embedding_idx; Type: INDEX; Schema: public; Owner: ollama
+-- Name: pages_embedding_idx; Type: INDEX; Schema: public; Owner: marvin
 --
 
 CREATE INDEX pages_embedding_idx ON public.pages USING hnsw (embedding public.vector_cosine_ops);
 
 
 --
--- Name: rag_for_messages increment_rating; Type: TRIGGER; Schema: public; Owner: ollama
+-- Name: rag_for_messages increment_rating; Type: TRIGGER; Schema: public; Owner: marvin
 --
 
 CREATE TRIGGER increment_rating AFTER INSERT ON public.rag_for_messages FOR EACH ROW EXECUTE FUNCTION public.increment_rating_of_page();
 
 
 --
--- Name: messages new_message; Type: TRIGGER; Schema: public; Owner: ollama
+-- Name: messages new_message; Type: TRIGGER; Schema: public; Owner: marvin
 --
 
 CREATE TRIGGER new_message AFTER INSERT ON public.messages FOR EACH ROW EXECUTE FUNCTION public.update_session_end_time();
 
 
 --
--- Name: sessions new_session; Type: TRIGGER; Schema: public; Owner: ollama
+-- Name: sessions new_session; Type: TRIGGER; Schema: public; Owner: marvin
 --
 
 CREATE TRIGGER new_session AFTER INSERT ON public.sessions FOR EACH ROW EXECUTE FUNCTION public.new_session();
 
 
 --
--- Name: users new_user; Type: TRIGGER; Schema: public; Owner: ollama
+-- Name: users new_user; Type: TRIGGER; Schema: public; Owner: marvin
 --
 
 CREATE TRIGGER new_user AFTER INSERT ON public.users FOR EACH ROW EXECUTE FUNCTION public.new_user();
 
 
 --
--- Name: rag_for_messages message_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ollama
+-- Name: rag_for_messages message_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: marvin
 --
 
 ALTER TABLE ONLY public.rag_for_messages
@@ -572,7 +572,7 @@ ALTER TABLE ONLY public.rag_for_messages
 
 
 --
--- Name: messages messages_session_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ollama
+-- Name: messages messages_session_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: marvin
 --
 
 ALTER TABLE ONLY public.messages
@@ -580,7 +580,7 @@ ALTER TABLE ONLY public.messages
 
 
 --
--- Name: rag_for_messages page_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ollama
+-- Name: rag_for_messages page_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: marvin
 --
 
 ALTER TABLE ONLY public.rag_for_messages
@@ -588,7 +588,7 @@ ALTER TABLE ONLY public.rag_for_messages
 
 
 --
--- Name: sessions session_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ollama
+-- Name: sessions session_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: marvin
 --
 
 ALTER TABLE ONLY public.sessions
