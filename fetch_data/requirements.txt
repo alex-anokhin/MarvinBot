@@ -1,0 +1,4 @@
+python-dotenv
+notion_client
+tqdm psycopg2
+psycopg2
