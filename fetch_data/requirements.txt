@@ -1,4 +1,5 @@
 python-dotenv
 notion_client
-tqdm psycopg2
+tqdm
 psycopg2
+ollama
