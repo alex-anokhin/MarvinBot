@@ -145,12 +145,17 @@ def fetch_all_data():
                     response = ollama.embeddings(model="mxbai-embed-large",
                                                 prompt=page_content)
                     embedding = response["embedding"]
-                    query = ("INSERT INTO pages (title, doc, link, embedding) VALUES (%s, %s, %s, %s)")
-                    data = (page_title, page_content, page_url, embedding)
-                    dbcursor.execute(query, data)
-                    dbconn.commit()
-                    #rowscount = dbcursor.rowcount
-                    print("""Insert page '{}'""".format(page_title))
+                    #print(embedding);
+                    if (embedding):
+                        #dbconn.commit()
+                        query = ("INSERT INTO pages (title, doc, link, embedding) VALUES (%s, %s, %s, %s)")
+                        data = (page_title, page_content, page_url, embedding)
+                        dbcursor.execute(query, data)
+                        dbconn.commit()
+                        ##rowscount = dbcursor.rowcount
+                        print("""Insert page '{}'""".format(page_title))
+                    else:
+                        print("""Problem with page'{}'""".format(page_title))
             except Exception as e:
                 print(f"Error processing page {page_id}: {e}")
                 continue
