@@ -128,6 +128,7 @@ def fetch_all_data():
                     num = int(0)
                     while (len(page_content) > 0):
                         response = ollama.embeddings(model="mxbai-embed-large",
+                                                     host = "ollama:11434",
                                                      prompt=page_content[0:str_embedd_size])
                         embedding = response["embedding"]
                         query = ("INSERT INTO pages (title, doc, link, embedding) VALUES (%s, %s, %s, %s)")
