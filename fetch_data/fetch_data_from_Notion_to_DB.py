@@ -83,7 +83,8 @@ def delete_useless_info(texts):
         texts.remove(useless_info)
 
 import psycopg2
-import ollama
+from ollama import Client as Ollama_Client
+llm_client = Ollama_Client(host="ollama:11434")
 
 def fetch_all_data():
     try:
@@ -127,7 +128,7 @@ def fetch_all_data():
                 if (os.getenv("EMBEDDING_WITH_CHUNKS", "False") == "True"):
                     num = int(0)
                     while (len(page_content) > 0):
-                        response = ollama.embeddings(model="mxbai-embed-large",
+                        response = llm_client.embeddings(model="mxbai-embed-large",
                                                      host = "ollama:11434",
                                                      prompt=page_content[0:str_embedd_size])
                         embedding = response["embedding"]
@@ -143,7 +144,7 @@ def fetch_all_data():
                         else:
                             break
                 else:
-                    response = ollama.embeddings(model="mxbai-embed-large",
+                    response = llm_client.embeddings(model="mxbai-embed-large",
                                                 prompt=page_content)
                     embedding = response["embedding"]
                     #print(embedding);
