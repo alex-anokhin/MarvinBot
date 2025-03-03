@@ -110,6 +110,7 @@ def fetch_all_data():
         
         # Initialize Notion client
         notion = Client(auth=os.getenv("NOTION_TOKEN"))
+        embedding_model_name = Client(auth=os.getenv("EMBEDDING_MODEL"))
         
         # All in 1 database i hardoceed the database id
         page_ids = get_all_page_ids_from_database(
@@ -128,7 +129,7 @@ def fetch_all_data():
                 if (os.getenv("EMBEDDING_WITH_CHUNKS", "False") == "True"):
                     num = int(0)
                     while (len(page_content) > 0):
-                        response = llm_client.embeddings(model="mxbai-embed-large",
+                        response = llm_client.embeddings(model=embedding_model_name,
                                                      host = "ollama:11434",
                                                      prompt=page_content[0:str_embedd_size])
                         embedding = response["embedding"]
